@@ -26,6 +26,9 @@ jobs:
       - run:
           name: Build and Test
           command: bundle exec fastlane scan
+          environment:
+            LC_CTYPE: "en_US.UTF-8"
+
 
       # Collect XML test results data to show in the UI,
       # and save the same XML files under test-results folder
