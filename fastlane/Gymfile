@@ -1,2 +1,2 @@
 scheme "Today"
-output_directory "./"
+clean true

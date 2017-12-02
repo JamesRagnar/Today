@@ -1,5 +1,6 @@
 version: 2
 jobs:
+  
   test:
 
     macos:
@@ -81,8 +82,7 @@ workflows:
       - test
       - deploy:
           requires:
-            test
+            - test
           filters:
             branches:
               only: beta
-
