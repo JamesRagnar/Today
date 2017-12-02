@@ -5,23 +5,21 @@ jobs:
     macos:
       xcode: "9.1.0"
     shell: /bin/bash --login -eo pipefail
-
+      
     steps:
       - checkout
 
       - restore_cache:
           keys:
-          - v1-pods-{{ checksum "Podfile.lock" }}
+          - v1-carthage-{{ checksum "Cartfile.resolved" }}
 
       - run:
           name: Bundler
           command: bundle install
 
       - run:
-          name: Cocoapods
-          command: |
-            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
-            bundle exec pod install
+          name: Carthage
+          command: sh Scripts/buildDeps.sh
 
       - run:
           name: Build and Test
@@ -44,8 +42,6 @@ jobs:
           destination: scan-logs
 
       - save_cache:
-          key: v1-pods-{{ checksum "Podfile.lock" }}
+          key: v1-carthage-{{ checksum "Cartfile.resolved" }}
           paths:
-            - Pods
-            - ~/.cocoapods
-
+            - Carthage
