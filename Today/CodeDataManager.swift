@@ -38,6 +38,10 @@ class CoreDataManager {
         return container
     }()
     
+    public var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
+    
     func saveContext(_ context: NSManagedObjectContext) {
         guard context.hasChanges else { return }
         do {

@@ -11,9 +11,9 @@ import UIKit
 
 class NewEntryParserView: UIView {
     
-    private lazy var textField: UITextField = {
-        let textField = UITextField()
-        return textField
+    public lazy var textView: UITextView = {
+        let textView = UITextView()
+        return textView
     }()
     
     init() {
@@ -21,7 +21,7 @@ class NewEntryParserView: UIView {
         
         backgroundColor = .white
         
-        addSubview(textField)
+        addSubview(textView)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -31,6 +31,6 @@ class NewEntryParserView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        textField.frame = bounds
+        textView.frame = bounds
     }
 }

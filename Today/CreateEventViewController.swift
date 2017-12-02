@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreData
 import MapKit
+import RxSwift
 
 class CreateEventViewController: UIViewController {
     
@@ -22,11 +23,16 @@ class CreateEventViewController: UIViewController {
     
     private lazy var entryView: NewEntryParserView = {
         let entryView = NewEntryParserView()
-//        entryView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        entryView.textView.delegate = self
         return entryView
     }()
     
     private let coreDataManager: CoreDataManager
+    private lazy var disposeBag = DisposeBag()
+    
+    private var parsedTitle: String?
+    private var parsedDate: Date?
+    private var parsedAddress: String?
     
     required init(coreDataManager: CoreDataManager) {
         self.coreDataManager = coreDataManager
@@ -54,16 +60,46 @@ class CreateEventViewController: UIViewController {
         view.addSubview(entryView)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NotificationCenter
+            .default
+            .rx
+            .notification(NSNotification.Name.UIKeyboardWillChangeFrame)
+            .map { notification -> CGFloat in
+                (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.height ?? 0
+            }.subscribe(onNext: { [weak self] (keyboardHeight) in
+                guard let this = self else { return }
+                var frameSize = this.view.bounds
+                frameSize.size.height -= keyboardHeight
+                this.entryView.frame = frameSize.insetBy(dx: 10, dy: 10)
+            }).disposed(by: disposeBag)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         navigationController?.isNavigationBarHidden = false
     }
     
-    @objc func saveButtonTapped() {
+    @objc func saveButtonTapped() {    
+        guard let newEvent = NSEntityDescription.insertNewObject(forEntityName: "Event", into: coreDataManager.viewContext) as? Event else  {
+            return
+        }
+        
+        newEvent.title = parsedTitle
+        newEvent.date = parsedDate
+        newEvent.address = parsedAddress
+        
+        navigationController?.popViewController(animated: true)
     }
     
     private func updateParsedEventData(from string: String) {
+        
+        parsedTitle = string
+        parsedDate = nil
+        parsedAddress = nil
         
         let types: NSTextCheckingResult.CheckingType = [.date, .address]
         let detector = try? NSDataDetector.init(types: types.rawValue)
@@ -75,28 +111,18 @@ class CreateEventViewController: UIViewController {
                                        range: NSRange(location: 0, length: attributedString.string.count))
         
         for match in matches ?? [] {
-            if match.resultType == .date, let _ = match.date {
+            if match.resultType == .date, let matchDate = match.date {
+                parsedDate = matchDate
                 attributedString.addAttributes([.foregroundColor : UIColor.blue], range: match.range)
             }
             
-            if match.resultType == .address, let addressString = stringFrom(address: match.components) {
+            if match.resultType == .address, let matchAddress = stringFrom(address: match.components) {
+                parsedAddress = matchAddress
                 attributedString.addAttributes([.foregroundColor: UIColor.green], range: match.range)
-                
-                let request = MKLocalSearchRequest()
-                request.naturalLanguageQuery = addressString
-                //        request.region = mapView.region
-                let search = MKLocalSearch(request: request)
-                search.start { response, error in
-                    guard error == nil, let mapItem = response?.mapItems.first else {
-                        return
-                    }
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = mapItem.placemark.coordinate
-                }
             }
         }
         
-        // user attr string
+        entryView.textView.attributedText = attributedString
     }
     
     private func stringFrom(address components: [NSTextCheckingKey : String]?) -> String? {
