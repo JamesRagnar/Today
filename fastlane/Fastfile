@@ -15,6 +15,6 @@ platform :ios do
   lane :beta do
     match(type: "appstore")
     gym(export_method: "app-store")
-    pilot
+    pilot(skip_waiting_for_build_processing: true)
   end
 end
