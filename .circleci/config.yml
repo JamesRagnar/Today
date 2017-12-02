@@ -18,7 +18,7 @@ jobs:
 
       - run:
           name: Carthage
-          command: 
+          command: sh Scripts/buildDeps.sh
 
       - run:
           name: Build and Test
