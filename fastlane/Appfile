@@ -1,0 +1,4 @@
+app_identifier "app.ragnar.today" # The bundle identifier of your app
+apple_id "james.harquail@hotmail.com" # Your Apple email address
+
+team_id "W375UQHBF4" # Developer Portal Team ID
