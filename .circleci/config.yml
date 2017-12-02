@@ -1,0 +1,51 @@
+version: 2
+jobs:
+  build:
+
+    macos:
+      xcode: "9.1.0"
+    shell: /bin/bash --login -eo pipefail
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-pods-{{ checksum "Podfile.lock" }}
+
+      - run:
+          name: Bundler
+          command: bundle install
+
+      - run:
+          name: Cocoapods
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+            bundle exec pod install
+
+      - run:
+          name: Build and Test
+          command: bundle exec fastlane scan
+          environment:
+            LC_CTYPE: "en_US.UTF-8"
+            LANG: "en_US.UTF-8"
+
+
+      # Collect XML test results data to show in the UI,
+      # and save the same XML files under test-results folder
+      # in the Artifacts tab
+      - store_test_results:
+          path: test_output/report.xml
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: scan-test-results
+      - store_artifacts:
+          path: ~/Library/Logs/scan
+          destination: scan-logs
+
+      - save_cache:
+          key: v1-pods-{{ checksum "Podfile.lock" }}
+          paths:
+            - Pods
+            - ~/.cocoapods
+

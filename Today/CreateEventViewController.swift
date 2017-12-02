@@ -75,7 +75,7 @@ class CreateEventViewController: UIViewController {
                                        range: NSRange(location: 0, length: attributedString.string.count))
         
         for match in matches ?? [] {
-            if match.resultType == .date, let date = match.date {
+            if match.resultType == .date, let _ = match.date {
                 attributedString.addAttributes([.foregroundColor : UIColor.blue], range: match.range)
             }
             
@@ -86,7 +86,7 @@ class CreateEventViewController: UIViewController {
                 request.naturalLanguageQuery = addressString
                 //        request.region = mapView.region
                 let search = MKLocalSearch(request: request)
-                search.start { [weak self] response, error in
+                search.start { response, error in
                     guard error == nil, let mapItem = response?.mapItems.first else {
                         return
                     }
