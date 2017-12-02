@@ -1,0 +1,2 @@
+scheme "Today"
+output_directory "./"
