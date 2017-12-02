@@ -1,12 +1,7 @@
-# iOS CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/ios-migrating-from-1-2/ for more details
-#
 version: 2
 jobs:
   build:
 
-    # Specify the Xcode version to use
     macos:
       xcode: "9.0"
     shell: /bin/bash --login -eo pipefail
@@ -14,15 +9,20 @@ jobs:
     steps:
       - checkout
 
+      - restore_cache:
+          keys:
+          - v1-pods-{{ checksum "Podfile.lock" }}
+
       - run:
           name: Bundler
           command: bundle install
 
       - run:
           name: Cocoapods
-          command: bundle exec pod install
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+            bundle exec pod install
 
-      # Build the app and run tests
       - run:
           name: Build and Test
           command: bundle exec fastlane scan
@@ -38,4 +38,9 @@ jobs:
       - store_artifacts:
           path: ~/Library/Logs/scan
           destination: scan-logs
+
+      - save_cache:
+          key: v1-pods-{{ checksum "Podfile.lock" }}
+          paths:
+            - Pods
 
