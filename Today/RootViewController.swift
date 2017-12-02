@@ -132,7 +132,7 @@ extension RootViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: view.bounds.width, height: 150)
         } else {
             let event = events[indexPath.row]
-            return CGSize(width: view.bounds.width - 20, height: EventCollectionViewCell.desiredHeight(for: event))
+            return CGSize(width: view.bounds.width, height: EventCollectionViewCell.desiredHeight(for: event))
         }
     }
 }
