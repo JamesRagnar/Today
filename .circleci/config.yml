@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
 
     macos:
       xcode: "9.1.0"
@@ -23,7 +23,7 @@ jobs:
 
       - run:
           name: Build and Test
-          command: bundle exec fastlane scan
+          command: bundle exec fastlane test
           environment:
             LC_CTYPE: "en_US.UTF-8"
             LANG: "en_US.UTF-8"
@@ -45,3 +45,44 @@ jobs:
           key: v1-carthage-{{ checksum "Cartfile.resolved" }}
           paths:
             - Carthage
+
+  deploy:
+
+    macos:
+      xcode: "9.1.0"
+    shell: /bin/bash --login -eo pipefail
+      
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-carthage-{{ checksum "Cartfile.resolved" }}
+
+      - run:
+          name: Bundler
+          command: bundle install
+
+      - run:
+          name: Carthage
+          command: sh Scripts/buildDeps.sh
+
+      - run:
+          name: Build and Deploy
+          command: bundle exec fastlane beta
+          environment:
+            LC_CTYPE: "en_US.UTF-8"
+            LANG: "en_US.UTF-8"
+
+workflows:
+  version: 2
+  test_beta:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            test
+          filters:
+            branches:
+              only: beta
+
