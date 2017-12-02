@@ -1,0 +1,2 @@
+workspace "today.xcworkspace"
+scheme "Today-Test"
