@@ -16,6 +16,7 @@
 		ADDD6E161FC67F7200679F57 /* EventCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD6E151FC67F7200679F57 /* EventCollectionViewCell.swift */; };
 		ADE736831FD2FD020077227A /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE736811FD2FD020077227A /* RxCocoa.framework */; };
 		ADE736841FD2FD020077227A /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADE736821FD2FD020077227A /* RxSwift.framework */; };
+		ADE736871FD34E990077227A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADE736861FD34E990077227A /* Images.xcassets */; };
 		ADF63AED1FC6426F000953B2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63AEC1FC6426F000953B2 /* AppDelegate.swift */; };
 		ADF63AEF1FC6426F000953B2 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63AEE1FC6426F000953B2 /* RootViewController.swift */; };
 		ADF63AF71FC6426F000953B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF63AF51FC6426F000953B2 /* LaunchScreen.storyboard */; };
@@ -43,6 +44,7 @@
 		ADDD6E151FC67F7200679F57 /* EventCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCollectionViewCell.swift; sourceTree = "<group>"; };
 		ADE736811FD2FD020077227A /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		ADE736821FD2FD020077227A /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		ADE736861FD34E990077227A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		ADF63AE91FC6426F000953B2 /* Today.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Today.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADF63AEC1FC6426F000953B2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ADF63AEE1FC6426F000953B2 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				ADF63AF51FC6426F000953B2 /* LaunchScreen.storyboard */,
 				ADF63AF81FC6426F000953B2 /* Info.plist */,
 				AD29709C1FCF6EF500E0569A /* TodayDataModel.xcdatamodeld */,
+				ADE736861FD34E990077227A /* Images.xcassets */,
 			);
 			path = Today;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADF63AF71FC6426F000953B2 /* LaunchScreen.storyboard in Resources */,
+				ADE736871FD34E990077227A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
