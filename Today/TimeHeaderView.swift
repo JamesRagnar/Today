@@ -1,5 +1,5 @@
 //
-//  TimeTableViewCell.swift
+//  TimeHeaderView.swift
 //  Today
 //
 //  Created by James Harquail on 2017-11-22.
@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TimeTableViewCell: UITableViewCell {
+class TimeHeaderView: UITableViewHeaderFooterView {
     
     static var reuseIdentifier: String {
         return "\(self)"
@@ -26,15 +26,14 @@ class TimeTableViewCell: UITableViewCell {
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.textAlignment = .center
         label.font = UIFont(name: "AvenirNext-UltraLight", size: 80)
+        
         return label
     }()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        selectionStyle = .none
-        
-        contentView.backgroundColor = .white
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
+        contentView.backgroundColor = UIColor(white: 1, alpha: 0.8)
         contentView.addSubview(timeLabel)
     }
     
@@ -47,12 +46,5 @@ class TimeTableViewCell: UITableViewCell {
             .timeString
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        viewModel = nil
-        disposeBag = DisposeBag()
     }
 }

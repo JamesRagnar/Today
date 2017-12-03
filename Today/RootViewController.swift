@@ -27,6 +27,8 @@ class RootViewController: UIViewController {
         return tableView
     }()
     
+    private lazy var timeHeaderView: TimeHeaderView = TimeHeaderView()
+    
     private lazy var addEventButton: UIButton = {
         let button = UIButton()
         button.frame.size = CGSize(width: 200, height: 50)
@@ -74,7 +76,7 @@ class RootViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        registerCollectionViewCells()
+        registerTableViews()
         
         addEventButton
             .rx
@@ -97,8 +99,9 @@ class RootViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
-    private func registerCollectionViewCells() {
-        tableView.register(TimeTableViewCell.self, forCellReuseIdentifier: TimeTableViewCell.reuseIdentifier)
+    private func registerTableViews() {
+        tableView.register(TimeHeaderView.self, forHeaderFooterViewReuseIdentifier: TimeHeaderView.reuseIdentifier)
+        
         tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier)
         tableView.register(ErrorTableViewCell.self, forCellReuseIdentifier: ErrorTableViewCell.reuseIdentifier)
     }
@@ -107,17 +110,8 @@ class RootViewController: UIViewController {
 extension RootViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: TimeTableViewCell.reuseIdentifier) as? TimeTableViewCell else {
-                return ErrorTableViewCell()
-            }
-            cell.inject(model: timeViewModel)
-            return cell
-        }
-        
         guard
             let sections = fetchedResultsController.sections,
-            sections.count > 0,
             let events = sections.first?.objects as? [Event],
             let cell = tableView.dequeueReusableCell(withIdentifier: EventTableViewCell.reuseIdentifier) as? EventTableViewCell else {
                 return ErrorTableViewCell()
@@ -129,38 +123,40 @@ extension RootViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: TimeHeaderView.reuseIdentifier) as? TimeHeaderView
+        header?.inject(model: timeViewModel)
+        return header
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        } else {
-            guard
-                let sections = fetchedResultsController.sections,
-                sections.count > 0,
-                let events = sections.first else {
+        guard
+            let sections = fetchedResultsController.sections,
+            sections.count > 0,
+            let events = sections.first else {
                 return 0
-            }
-            
-            return events.numberOfObjects
         }
+        
+        return events.numberOfObjects
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return 150
-        } else {
-            guard
-                let sections = fetchedResultsController.sections,
-                sections.count > 0,
-                let events = sections.first?.objects as? [Event] else {
-                    return 40
-            }
-            let event = events[indexPath.row]
-            return EventTableViewCell.desiredHeight(for: event)
+        guard
+            let sections = fetchedResultsController.sections,
+            sections.count > 0,
+            let events = sections.first?.objects as? [Event] else {
+                return 40
         }
+        let event = events[indexPath.row]
+        return EventTableViewCell.desiredHeight(for: event)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 150
     }
 }
 
@@ -186,13 +182,21 @@ extension RootViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            if let row = newIndexPath?.row {
+                tableView.insertRows(at: [IndexPath(row: row, section: 1)], with: .fade)
+            }
         case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
+            if let row = indexPath?.row {
+                tableView.deleteRows(at: [IndexPath(row: row, section: 1)], with: .fade)
+            }
         case .update:
-            tableView.reloadRows(at: [indexPath!], with: .fade)
+            if let row = indexPath?.row {
+                tableView.reloadRows(at: [IndexPath(row: row, section: 1)], with: .fade)
+            }
         case .move:
-            tableView.moveRow(at: indexPath!, to: newIndexPath!)
+            if let oldRow = indexPath?.row, let newRow = newIndexPath?.row {
+                tableView.moveRow(at: IndexPath(row: oldRow, section: 1), to: IndexPath(row: newRow, section: 1))
+            }
         }
     }
     
@@ -200,4 +204,3 @@ extension RootViewController: NSFetchedResultsControllerDelegate {
         tableView.endUpdates()
     }
 }
-

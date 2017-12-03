@@ -23,7 +23,7 @@
 		ADF63AEF1FC6426F000953B2 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63AEE1FC6426F000953B2 /* RootViewController.swift */; };
 		ADF63AF71FC6426F000953B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF63AF51FC6426F000953B2 /* LaunchScreen.storyboard */; };
 		ADF63B021FC6426F000953B2 /* TodayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63B011FC6426F000953B2 /* TodayTests.swift */; };
-		ADF63B0D1FC64981000953B2 /* TimeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63B0C1FC64981000953B2 /* TimeTableViewCell.swift */; };
+		ADF63B0D1FC64981000953B2 /* TimeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63B0C1FC64981000953B2 /* TimeHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +57,7 @@
 		ADF63AFD1FC6426F000953B2 /* TodayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADF63B011FC6426F000953B2 /* TodayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayTests.swift; sourceTree = "<group>"; };
 		ADF63B031FC6426F000953B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ADF63B0C1FC64981000953B2 /* TimeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTableViewCell.swift; sourceTree = "<group>"; };
+		ADF63B0C1FC64981000953B2 /* TimeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +118,7 @@
 				ADDD6E131FC66E1100679F57 /* CreateEventViewController.swift */,
 				AD2D15F41FD0DE570049B0CC /* NewEntryParserView.swift */,
 				ADE7368A1FD460870077227A /* ErrorTableViewCell.swift */,
-				ADF63B0C1FC64981000953B2 /* TimeTableViewCell.swift */,
+				ADF63B0C1FC64981000953B2 /* TimeHeaderView.swift */,
 				ADDD6E151FC67F7200679F57 /* EventTableViewCell.swift */,
 				AD74A46B1FC64C4C00BD5BBA /* TimeViewModel.swift */,
 				ADDD6E111FC6640D00679F57 /* RootViewModel.swift */,
@@ -268,7 +268,7 @@
 				ADDD6E161FC67F7200679F57 /* EventTableViewCell.swift in Sources */,
 				ADF63AEF1FC6426F000953B2 /* RootViewController.swift in Sources */,
 				AD74A46C1FC64C4C00BD5BBA /* TimeViewModel.swift in Sources */,
-				ADF63B0D1FC64981000953B2 /* TimeTableViewCell.swift in Sources */,
+				ADF63B0D1FC64981000953B2 /* TimeHeaderView.swift in Sources */,
 				ADF63AED1FC6426F000953B2 /* AppDelegate.swift in Sources */,
 				ADE7368B1FD460870077227A /* ErrorTableViewCell.swift in Sources */,
 				ADE736891FD45CA80077227A /* EventFactory.swift in Sources */,
