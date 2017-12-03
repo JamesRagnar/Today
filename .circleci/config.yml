@@ -43,7 +43,7 @@ jobs:
           destination: scan-logs
 
       - save_cache:
-          key: v1-carthage-{{ checksum "Cartfile.resolved" }}
+          key: v2-carthage-{{ checksum "Cartfile.resolved" }}
           paths:
             - Carthage
 
@@ -58,7 +58,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-carthage-{{ checksum "Cartfile.resolved" }}
+          - v2-carthage-{{ checksum "Cartfile.resolved" }}
 
       - run:
           name: Bundler

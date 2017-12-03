@@ -33,7 +33,7 @@ class RootViewController: UIViewController {
         let button = UIButton()
         button.frame.size = CGSize(width: 200, height: 50)
         button.center.x = view.center.x
-        button.frame.origin.y = view.frame.height - 70
+        button.frame.origin.y = view.frame.height - 70 - self.view.safeAreaInsets.bottom
         button.autoresizingMask = [.flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
         button.setTitle("+ Add Event", for: .normal)
         button.backgroundColor = UIColor(red: 119.0 / 255.0, green: 158.0 / 255.0, blue: 203.0 / 255.0, alpha: 1)

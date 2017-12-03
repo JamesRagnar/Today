@@ -19,7 +19,10 @@ class EventTableViewCell: UITableViewCell {
     }
     
     static func desiredHeight(for event: Event) -> CGFloat {
-        return event.address == nil ? 60 : 200
+        let latitude = event.latitude
+        let longitude = event.longitude
+        
+        return latitude == 0 && longitude == 0 ? 40 : 200
     }
     
     private lazy var timeLabel: UILabel = {
