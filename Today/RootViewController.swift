@@ -11,11 +11,21 @@ import RxSwift
 import RxCocoa
 import CoreData
 
-class RootViewController: UICollectionViewController {
-
+class RootViewController: UIViewController {
+    
     private lazy var timeViewModel: TimeViewModelType = TimeViewModel()
     
     private lazy var disposeBag = DisposeBag()
+    
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.frame = view.bounds
+        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.backgroundColor = .gray
+        return tableView
+    }()
     
     private lazy var addEventButton: UIButton = {
         let button = UIButton()
@@ -30,12 +40,24 @@ class RootViewController: UICollectionViewController {
     }()
     
     private let coreDataManager: CoreDataManager
-
-    private var events = [Event]()
+    
+    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<Event> = {
+        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
         
+        let sortDescriptor = NSSortDescriptor(key: "date", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                                  managedObjectContext: self.coreDataManager.persistentContainer.viewContext,
+                                                                  sectionNameKeyPath: nil,
+                                                                  cacheName: nil)
+        fetchedResultsController.delegate = self
+        return fetchedResultsController
+    }()
+    
     init(coreDataManager: CoreDataManager) {
         self.coreDataManager = coreDataManager
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,8 +67,7 @@ class RootViewController: UICollectionViewController {
     override func loadView() {
         super.loadView()
         
-        collectionView?.backgroundColor = .gray
-        
+        view.addSubview(tableView)
         view.addSubview(addEventButton)
     }
     
@@ -61,78 +82,122 @@ class RootViewController: UICollectionViewController {
             .subscribe(onNext: { [weak self] _ in
                 guard let coreDataManager = self?.coreDataManager else { return }
                 self?.navigationController?.pushViewController(CreateEventViewController(coreDataManager: coreDataManager), animated: true)
-        }).disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Failed to initialize FetchedResultsController: \(error)")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         navigationController?.isNavigationBarHidden = true
-        
-        let viewContext = coreDataManager.persistentContainer.viewContext
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Event")
-        
-        events = []
-        do {
-            events = try viewContext.fetch(request) as? [Event] ?? []
-        } catch {
-            print("Failed")
-        }
-        
-        collectionView?.reloadData()
     }
-
+    
     private func registerCollectionViewCells() {
-        collectionView?.register(TimeCollectionViewCell.self, forCellWithReuseIdentifier: TimeCollectionViewCell.reuseIdentifier)
-        collectionView?.register(EventCollectionViewCell.self, forCellWithReuseIdentifier: EventCollectionViewCell.reuseIdentifier)
+        tableView.register(TimeTableViewCell.self, forCellReuseIdentifier: TimeTableViewCell.reuseIdentifier)
+        tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier)
+        tableView.register(ErrorTableViewCell.self, forCellReuseIdentifier: ErrorTableViewCell.reuseIdentifier)
     }
+}
+
+extension RootViewController: UITableViewDelegate, UITableViewDataSource {
     
-//    MARK: UICollectionView
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TimeCollectionViewCell.reuseIdentifier, for: indexPath) as! TimeCollectionViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: TimeTableViewCell.reuseIdentifier) as? TimeTableViewCell else {
+                return ErrorTableViewCell()
+            }
             cell.inject(model: timeViewModel)
             return cell
         }
         
+        guard
+            let sections = fetchedResultsController.sections,
+            sections.count > 0,
+            let events = sections.first?.objects as? [Event],
+            let cell = tableView.dequeueReusableCell(withIdentifier: EventTableViewCell.reuseIdentifier) as? EventTableViewCell else {
+                return ErrorTableViewCell()
+        }
+        
         let event = events[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventCollectionViewCell.reuseIdentifier, for: indexPath) as! EventCollectionViewCell
         cell.loadData(from: event)
         
         return cell
     }
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
         } else {
-            return events.count
+            guard
+                let sections = fetchedResultsController.sections,
+                sections.count > 0,
+                let events = sections.first else {
+                return 0
+            }
+            
+            return events.numberOfObjects
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if section == 0 {
-            return .zero
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return 150
         } else {
-            return UIEdgeInsets(top: 20, left: 0, bottom: 90, right: 0)
+            guard
+                let sections = fetchedResultsController.sections,
+                sections.count > 0,
+                let events = sections.first?.objects as? [Event] else {
+                    return 40
+            }
+            let event = events[indexPath.row]
+            return EventTableViewCell.desiredHeight(for: event)
         }
     }
 }
 
-extension RootViewController: UICollectionViewDelegateFlowLayout {
+extension RootViewController: NSFetchedResultsControllerDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.section == 0 {
-            return CGSize(width: view.bounds.width, height: 150)
-        } else {
-            let event = events[indexPath.row]
-            return CGSize(width: view.bounds.width, height: EventCollectionViewCell.desiredHeight(for: event))
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        switch type {
+        case .insert:
+            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .move:
+            break
+        case .update:
+            break
         }
     }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .update:
+            tableView.reloadRows(at: [indexPath!], with: .fade)
+        case .move:
+            tableView.moveRow(at: indexPath!, to: newIndexPath!)
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
 }
+

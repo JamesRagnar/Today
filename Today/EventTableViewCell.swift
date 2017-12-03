@@ -1,5 +1,5 @@
 //
-//  EventCollectionViewCell.swift
+//  EventTableViewCell.swift
 //  Today
 //
 //  Created by James Harquail on 2017-11-22.
@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 import MapKit
 
-class EventCollectionViewCell: UICollectionViewCell {
+class EventTableViewCell: UITableViewCell {
     
     static var reuseIdentifier: String {
         return "\(self)"
@@ -42,8 +42,11 @@ class EventCollectionViewCell: UICollectionViewCell {
         return mapView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        selectionStyle = .none
+        
         contentView.backgroundColor = .white
         
         contentView.addSubview(mapView)

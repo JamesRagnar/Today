@@ -1,5 +1,5 @@
 //
-//  TimeCollectionViewCell.swift
+//  TimeTableViewCell.swift
 //  Today
 //
 //  Created by James Harquail on 2017-11-22.
@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TimeCollectionViewCell: UICollectionViewCell {
+class TimeTableViewCell: UITableViewCell {
     
     static var reuseIdentifier: String {
         return "\(self)"
@@ -29,8 +29,11 @@ class TimeCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        selectionStyle = .none
+        
         contentView.backgroundColor = .white
         contentView.addSubview(timeLabel)
     }
@@ -40,7 +43,6 @@ class TimeCollectionViewCell: UICollectionViewCell {
     }
     
     public func inject(model viewModel: TimeViewModelType) {
-        
         viewModel
             .timeString
             .bind(to: timeLabel.rx.text)
