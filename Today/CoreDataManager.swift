@@ -1,5 +1,5 @@
 //
-//  CodeDataManager.swift
+//  CoreDataManager.swift
 //  Today
 //
 //  Created by James Harquail on 2017-11-29.
@@ -48,6 +48,10 @@ class CoreDataManager {
             let nserror = error as NSError
             fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
         }
+    }
+    
+    func createEvent(with title: String?, date: Date?, address: String?) {
+        EventFactory.createEvent(self, title: title, date: date, address: address)
     }
 }
 

@@ -12,7 +12,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-carthage-{{ checksum "Cartfile.resolved" }}
+          - v2-carthage-{{ checksum "Cartfile.resolved" }}
 
       - run:
           name: Bundler

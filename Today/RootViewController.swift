@@ -46,7 +46,7 @@ class RootViewController: UIViewController {
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<Event> = {
         let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
         
-        let sortDescriptor = NSSortDescriptor(key: "date", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "createdDate", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -147,7 +147,6 @@ extension RootViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard
             let sections = fetchedResultsController.sections,
-            sections.count > 0,
             let events = sections.first?.objects as? [Event] else {
                 return 40
         }
@@ -157,6 +156,10 @@ extension RootViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 150
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 90
     }
 }
 
@@ -182,20 +185,20 @@ extension RootViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            if let row = newIndexPath?.row {
-                tableView.insertRows(at: [IndexPath(row: row, section: 1)], with: .fade)
+            if let indexPath = newIndexPath {
+                tableView.insertRows(at: [indexPath], with: .fade)
             }
         case .delete:
-            if let row = indexPath?.row {
-                tableView.deleteRows(at: [IndexPath(row: row, section: 1)], with: .fade)
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [indexPath], with: .fade)
             }
         case .update:
-            if let row = indexPath?.row {
-                tableView.reloadRows(at: [IndexPath(row: row, section: 1)], with: .fade)
+            if let indexPath = indexPath {
+                tableView.reloadRows(at: [indexPath], with: .fade)
             }
         case .move:
-            if let oldRow = indexPath?.row, let newRow = newIndexPath?.row {
-                tableView.moveRow(at: IndexPath(row: oldRow, section: 1), to: IndexPath(row: newRow, section: 1))
+            if let oldIndex = indexPath, let newIndex = newIndexPath {
+                tableView.moveRow(at: oldIndex, to: newIndex)
             }
         }
     }

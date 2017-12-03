@@ -84,16 +84,7 @@ class CreateEventViewController: UIViewController {
     }
     
     @objc func saveButtonTapped() {    
-        guard let newEvent = NSEntityDescription.insertNewObject(forEntityName: "Event",
-                                                                 into: coreDataManager.persistentContainer.viewContext) as? Event else  {
-            return
-        }
-        
-        newEvent.title = parsedTitle
-        newEvent.date = parsedDate
-        newEvent.address = parsedAddress
-        
-        coreDataManager.saveContext()
+        coreDataManager.createEvent(with: parsedTitle, date: parsedDate, address: parsedAddress)
         
         navigationController?.popViewController(animated: true)
     }

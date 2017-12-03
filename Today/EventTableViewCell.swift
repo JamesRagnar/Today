@@ -19,7 +19,7 @@ class EventTableViewCell: UITableViewCell {
     }
     
     static func desiredHeight(for event: Event) -> CGFloat {
-        return event.address == nil ? 40 : 200
+        return event.address == nil ? 60 : 200
     }
     
     private lazy var timeLabel: UILabel = {
@@ -73,24 +73,18 @@ class EventTableViewCell: UITableViewCell {
         timeLabel.text = ""
         titleLabel.text = event.title
         
-        guard let address = event.address else {
+        let latitude = event.latitude
+        let longitude = event.longitude
+        
+        if latitude == 0 && longitude == 0 {
             mapView.alpha = 0
             return
         }
         
         mapView.alpha = 1
-        let request = MKLocalSearchRequest()
-        request.naturalLanguageQuery = address
-        //        request.region = mapView.region
-        let search = MKLocalSearch(request: request)
-        search.start { [weak self] response, error in
-            guard error == nil, let mapItem = response?.mapItems.first else {
-                return
-            }
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = mapItem.placemark.coordinate
-            self?.mapView.addAnnotation(annotation)
-            self?.mapView.showAnnotations([annotation], animated: false)
-        }
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        mapView.addAnnotation(annotation)
+        mapView.showAnnotations([annotation], animated: false)
     }
 }
