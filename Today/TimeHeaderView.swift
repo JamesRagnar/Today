@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TimeHeaderView: UITableViewHeaderFooterView {
+class TimeHeaderView: UIView {
     
     static var reuseIdentifier: String {
         return "\(self)"
@@ -22,26 +22,21 @@ class TimeHeaderView: UITableViewHeaderFooterView {
 
     private lazy var timeLabel: UILabel = {
         let label = UILabel()
-        label.frame = contentView.bounds
+        label.frame = self.bounds
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.textAlignment = .center
         label.font = UIFont(name: "AvenirNext-UltraLight", size: 80)
         return label
     }()
     
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(timeLabel)
+    init() {
+        super.init(frame: .zero)
+        backgroundColor = UIColor(white: 1, alpha: 0.8)
+        addSubview(timeLabel)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        timeLabel.text = nil
-        disposeBag = DisposeBag()
     }
     
     public func inject(model viewModel: TimeViewModelType) {

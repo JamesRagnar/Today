@@ -13,8 +13,6 @@ import CoreData
 
 class RootViewController: UIViewController {
     
-    private lazy var timeViewModel: TimeViewModelType = TimeViewModel()
-    
     private lazy var disposeBag = DisposeBag()
     
     private lazy var tableView: UITableView = {
@@ -27,7 +25,12 @@ class RootViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var timeHeaderView: TimeHeaderView = TimeHeaderView()
+    private lazy var timeViewModel: TimeViewModelType = TimeViewModel()
+    private lazy var timeHeaderView: TimeHeaderView = {
+        let view = TimeHeaderView()
+        view.inject(model: timeViewModel)
+        return view
+    }()
     
     private lazy var addEventButton: UIButton = {
         let button = UIButton()
@@ -100,8 +103,6 @@ class RootViewController: UIViewController {
     }
     
     private func registerTableViews() {
-        tableView.register(TimeHeaderView.self, forHeaderFooterViewReuseIdentifier: TimeHeaderView.reuseIdentifier)
-        
         tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier)
         tableView.register(ErrorTableViewCell.self, forCellReuseIdentifier: ErrorTableViewCell.reuseIdentifier)
     }
@@ -124,9 +125,8 @@ extension RootViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: TimeHeaderView.reuseIdentifier) as? TimeHeaderView
-        header?.inject(model: timeViewModel)
-        return header
+        timeHeaderView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 150)
+        return timeHeaderView
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
