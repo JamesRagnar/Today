@@ -9,7 +9,6 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import CoreData
 
 class RootViewController: UIViewController {
     
@@ -19,8 +18,8 @@ class RootViewController: UIViewController {
         let tableView = UITableView()
         tableView.frame = view.bounds
         tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        tableView.delegate = self
-        tableView.dataSource = self
+//        tableView.delegate = self
+//        tableView.dataSource = self
         tableView.backgroundColor = .gray
         return tableView
     }()
@@ -68,15 +67,22 @@ class RootViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        registerTableViews()
+        registerTableViewCells()
         
-//        addEventButton
-//            .rx
-//            .tap
-//            .subscribe(onNext: { [weak self] _ in
-//                guard let coreDataManager = self?.coreDataManager else { return }
+        addEventButton
+            .rx
+            .tap
+            .subscribe(onNext: { [weak self] _ in
+//                guard let coreDataManager = self?.viewModel.coreDataManager else { return }
 //                self?.navigationController?.pushViewController(CreateEventViewController(coreDataManager: coreDataManager), animated: true)
-//            }).disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
+        
+        
+        viewModel
+            .tableRows
+            .bind(to: tableView.rx.items(cellIdentifier: EventTableViewCell.reuseIdentifier, cellType: EventTableViewCell.self)) { (row, event, cell) in
+                cell.loadData(from: event)
+            }.disposed(by: disposeBag)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -85,28 +91,29 @@ class RootViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
-    private func registerTableViews() {
+    private func registerTableViewCells() {
         tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier)
         tableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.reuseIdentifier)
         tableView.register(ErrorTableViewCell.self, forCellReuseIdentifier: ErrorTableViewCell.reuseIdentifier)
     }
 }
 
-extension RootViewController: UITableViewDelegate, UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return ErrorTableViewCell()
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 0
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       return 0
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return EventTableViewCell.desiredHeight()
-    }
-}
+//extension RootViewController: UITableViewDelegate, UITableViewDataSource {
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        return ErrorTableViewCell()
+//    }
+//
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return 0
+//    }
+//
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//       return 0
+//    }
+//
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return EventTableViewCell.desiredHeight()
+//    }
+//}
+

@@ -11,14 +11,14 @@ import CoreData
 import RxSwift
 
 protocol DashboardViewModelType {
-    
+    var tableRows: Observable<[Event]> { get }
     var timeHeaderViewModel: TimeViewModelType { get }
 }
 
 class DashboardViewModel: RootViewModel {
     
     fileprivate lazy var timeViewModel: TimeViewModelType = TimeViewModel()
-    private let coreDataManager: CoreDataManager
+    public let coreDataManager: CoreDataManager
     
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<Event> = {
         let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
@@ -34,14 +34,19 @@ class DashboardViewModel: RootViewModel {
         return fetchedResultsController
     }()
     
+    fileprivate let events = Variable<[Event]>([])
+    
     init(coreDataManager: CoreDataManager) {
         self.coreDataManager = coreDataManager
         super.init()
+        startFetch()
     }
     
-    func startFetch() {
+    private func startFetch() {
         do {
             try fetchedResultsController.performFetch()
+            events.value = fetchedResultsController.sections?.first?.objects as? [Event] ?? []
+            print("Ping")
         } catch {
             fatalError("Failed to initialize FetchedResultsController: \(error)")
         }
@@ -51,10 +56,11 @@ class DashboardViewModel: RootViewModel {
 extension DashboardViewModel: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        tableView.beginUpdates()
+        print("")
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        print("ping")
 //        switch type {
 //        case .insert:
 //            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
@@ -68,24 +74,22 @@ extension DashboardViewModel: NSFetchedResultsControllerDelegate {
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-//        switch type {
-//        case .insert:
-//            if let indexPath = newIndexPath {
-//                tableView.insertRows(at: [indexPath], with: .fade)
-//            }
-//        case .delete:
-//            if let indexPath = indexPath {
-//                tableView.deleteRows(at: [indexPath], with: .fade)
-//            }
-//        case .update:
-//            if let indexPath = indexPath {
-//                tableView.reloadRows(at: [indexPath], with: .fade)
-//            }
-//        case .move:
-//            if let oldIndex = indexPath, let newIndex = newIndexPath {
-//                tableView.moveRow(at: oldIndex, to: newIndex)
-//            }
-//        }
+        guard let event = anObject as? Event else { return }
+        switch type {
+        case .insert:
+            if let row = newIndexPath?.row {
+                events.value.insert(event, at: row)
+            }
+        case .delete:
+            // todo
+            break
+        case .update:
+            // tell the tableview to reload only?
+            break
+        case .move:
+            // Noop
+            break
+        }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -94,6 +98,10 @@ extension DashboardViewModel: NSFetchedResultsControllerDelegate {
 }
 
 extension DashboardViewModel: DashboardViewModelType {
+    
+    var tableRows: Observable<[Event]> {
+        return events.asObservable()
+    }
     
     var timeHeaderViewModel: TimeViewModelType {
         return timeViewModel
