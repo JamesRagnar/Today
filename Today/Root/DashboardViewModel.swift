@@ -18,7 +18,7 @@ protocol DashboardViewModelType {
 class DashboardViewModel: RootViewModel {
     
     fileprivate lazy var timeViewModel: TimeViewModelType = TimeViewModel()
-    public let coreDataManager: CoreDataManager
+    private let coreDataManager: CoreDataManager
     
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<Event> = {
         let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
@@ -56,21 +56,7 @@ class DashboardViewModel: RootViewModel {
 extension DashboardViewModel: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("")
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        print("ping")
-//        switch type {
-//        case .insert:
-//            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-//        case .delete:
-//            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-//        case .move:
-//            break
-//        case .update:
-//            break
-//        }
+        
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -93,7 +79,7 @@ extension DashboardViewModel: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        tableView.endUpdates()
+
     }
 }
 
