@@ -89,6 +89,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		ADE7368C1FD574780077227A /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				ADF63AEE1FC6426F000953B2 /* RootViewController.swift */,
+				ADF63B0C1FC64981000953B2 /* TimeHeaderView.swift */,
+				ADE7368A1FD460870077227A /* ErrorTableViewCell.swift */,
+				ADDD6E151FC67F7200679F57 /* EventTableViewCell.swift */,
+				AD74A46B1FC64C4C00BD5BBA /* TimeViewModel.swift */,
+				ADDD6E111FC6640D00679F57 /* RootViewModel.swift */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
 		ADF63AE01FC6426F000953B2 = {
 			isa = PBXGroup;
 			children = (
@@ -112,16 +125,11 @@
 			isa = PBXGroup;
 			children = (
 				ADF63AEC1FC6426F000953B2 /* AppDelegate.swift */,
-				ADE736881FD45CA80077227A /* EventFactory.swift */,
-				ADF63AEE1FC6426F000953B2 /* RootViewController.swift */,
 				AD29709A1FCF6BBB00E0569A /* CoreDataManager.swift */,
+				ADE736881FD45CA80077227A /* EventFactory.swift */,
+				ADE7368C1FD574780077227A /* Root */,
 				ADDD6E131FC66E1100679F57 /* CreateEventViewController.swift */,
 				AD2D15F41FD0DE570049B0CC /* NewEntryParserView.swift */,
-				ADF63B0C1FC64981000953B2 /* TimeHeaderView.swift */,
-				ADE7368A1FD460870077227A /* ErrorTableViewCell.swift */,
-				ADDD6E151FC67F7200679F57 /* EventTableViewCell.swift */,
-				AD74A46B1FC64C4C00BD5BBA /* TimeViewModel.swift */,
-				ADDD6E111FC6640D00679F57 /* RootViewModel.swift */,
 				ADF63AF51FC6426F000953B2 /* LaunchScreen.storyboard */,
 				ADF63AF81FC6426F000953B2 /* Info.plist */,
 				AD29709C1FCF6EF500E0569A /* TodayDataModel.xcdatamodeld */,

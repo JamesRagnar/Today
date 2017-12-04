@@ -24,6 +24,7 @@ class EventFactory {
         newEvent.title = title
         newEvent.date = date
         newEvent.address = address
+        newEvent.createdDate = Date()
         
         coreDataManager.saveContext()
         

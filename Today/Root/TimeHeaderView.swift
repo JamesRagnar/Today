@@ -29,6 +29,13 @@ class TimeHeaderView: UIView {
         return label
     }()
     
+    fileprivate lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }()
+    
     init() {
         super.init(frame: .zero)
         backgroundColor = UIColor(white: 1, alpha: 0.8)
@@ -41,7 +48,11 @@ class TimeHeaderView: UIView {
     
     public func inject(model viewModel: TimeViewModelType) {
         viewModel
-            .timeString
+            .currentDate
+            .map({ [weak self] (date) -> String? in
+                return self?.dateFormatter.string(from: date)
+            })
+            .observeOn(MainScheduler.instance)
             .bind(to: timeLabel.rx.text)
             .disposed(by: disposeBag)
     }
