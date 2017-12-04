@@ -21,6 +21,9 @@
 		ADE7368B1FD460870077227A /* ErrorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE7368A1FD460870077227A /* ErrorTableViewCell.swift */; };
 		ADE7368E1FD574C10077227A /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE7368D1FD574C10077227A /* LocationTableViewCell.swift */; };
 		ADE736901FD5787A0077227A /* Event+Today.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE7368F1FD5787A0077227A /* Event+Today.swift */; };
+		ADE736921FD586D70077227A /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE736911FD586D70077227A /* DashboardViewModel.swift */; };
+		ADE736941FD58C1B0077227A /* EventTableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE736931FD58C1B0077227A /* EventTableCellViewModel.swift */; };
+		ADE736961FD58C3D0077227A /* RowDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE736951FD58C3D0077227A /* RowDataModel.swift */; };
 		ADF63AED1FC6426F000953B2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63AEC1FC6426F000953B2 /* AppDelegate.swift */; };
 		ADF63AEF1FC6426F000953B2 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF63AEE1FC6426F000953B2 /* RootViewController.swift */; };
 		ADF63AF71FC6426F000953B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF63AF51FC6426F000953B2 /* LaunchScreen.storyboard */; };
@@ -53,6 +56,9 @@
 		ADE7368A1FD460870077227A /* ErrorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTableViewCell.swift; sourceTree = "<group>"; };
 		ADE7368D1FD574C10077227A /* LocationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTableViewCell.swift; sourceTree = "<group>"; };
 		ADE7368F1FD5787A0077227A /* Event+Today.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+Today.swift"; sourceTree = "<group>"; };
+		ADE736911FD586D70077227A /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		ADE736931FD58C1B0077227A /* EventTableCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTableCellViewModel.swift; sourceTree = "<group>"; };
+		ADE736951FD58C3D0077227A /* RowDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowDataModel.swift; sourceTree = "<group>"; };
 		ADF63AE91FC6426F000953B2 /* Today.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Today.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADF63AEC1FC6426F000953B2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ADF63AEE1FC6426F000953B2 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -97,12 +103,13 @@
 			isa = PBXGroup;
 			children = (
 				ADF63AEE1FC6426F000953B2 /* RootViewController.swift */,
+				ADE736911FD586D70077227A /* DashboardViewModel.swift */,
 				ADF63B0C1FC64981000953B2 /* TimeHeaderView.swift */,
 				ADE7368A1FD460870077227A /* ErrorTableViewCell.swift */,
 				ADDD6E151FC67F7200679F57 /* EventTableViewCell.swift */,
+				ADE736931FD58C1B0077227A /* EventTableCellViewModel.swift */,
 				ADE7368D1FD574C10077227A /* LocationTableViewCell.swift */,
 				AD74A46B1FC64C4C00BD5BBA /* TimeViewModel.swift */,
-				ADDD6E111FC6640D00679F57 /* RootViewModel.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -136,6 +143,8 @@
 				ADE7368C1FD574780077227A /* Root */,
 				ADDD6E131FC66E1100679F57 /* CreateEventViewController.swift */,
 				AD2D15F41FD0DE570049B0CC /* NewEntryParserView.swift */,
+				ADDD6E111FC6640D00679F57 /* RootViewModel.swift */,
+				ADE736951FD58C3D0077227A /* RowDataModel.swift */,
 				ADF63AF51FC6426F000953B2 /* LaunchScreen.storyboard */,
 				ADF63AF81FC6426F000953B2 /* Info.plist */,
 				AD29709C1FCF6EF500E0569A /* TodayDataModel.xcdatamodeld */,
@@ -281,13 +290,16 @@
 				AD2D15F51FD0DE570049B0CC /* NewEntryParserView.swift in Sources */,
 				ADDD6E161FC67F7200679F57 /* EventTableViewCell.swift in Sources */,
 				ADE7368E1FD574C10077227A /* LocationTableViewCell.swift in Sources */,
+				ADE736921FD586D70077227A /* DashboardViewModel.swift in Sources */,
 				ADF63AEF1FC6426F000953B2 /* RootViewController.swift in Sources */,
 				AD74A46C1FC64C4C00BD5BBA /* TimeViewModel.swift in Sources */,
 				ADF63B0D1FC64981000953B2 /* TimeHeaderView.swift in Sources */,
 				ADF63AED1FC6426F000953B2 /* AppDelegate.swift in Sources */,
+				ADE736961FD58C3D0077227A /* RowDataModel.swift in Sources */,
 				ADE7368B1FD460870077227A /* ErrorTableViewCell.swift in Sources */,
 				ADE736891FD45CA80077227A /* EventFactory.swift in Sources */,
 				ADE736901FD5787A0077227A /* Event+Today.swift in Sources */,
+				ADE736941FD58C1B0077227A /* EventTableCellViewModel.swift in Sources */,
 				ADDD6E141FC66E1100679F57 /* CreateEventViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -44,15 +44,9 @@ class LocationTableViewCell: UITableViewCell {
     }
     
     public func loadData(from event: Event) {
-        let latitude = event.latitude
-        let longitude = event.longitude
-        
-        if latitude == 0 && longitude == 0 {
-            return
-        }
-        
+        guard event.hasLocationData() else { return }
         let annotation = MKPointAnnotation()
-        annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        annotation.coordinate = CLLocationCoordinate2D(latitude: event.latitude, longitude: event.longitude)
         mapView.addAnnotation(annotation)
         mapView.showAnnotations([annotation], animated: false)
     }

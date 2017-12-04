@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-class RootViewModel {
+class RootViewModel: NSObject {
     
     internal lazy var disposeBag = DisposeBag()
 }

@@ -13,10 +13,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     lazy var coreDataManager = CoreDataManager()
+    lazy var dashboardViewModel = DashboardViewModel(coreDataManager: coreDataManager)
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
-        let navigationController = UINavigationController(rootViewController: RootViewController(coreDataManager: coreDataManager))
+        let navigationController = UINavigationController(rootViewController: RootViewController(viewModel: dashboardViewModel))
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         return true
