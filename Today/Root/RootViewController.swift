@@ -28,6 +28,8 @@ class RootViewController: UIViewController {
     private lazy var timeViewModel: TimeViewModelType = TimeViewModel()
     private lazy var timeHeaderView: TimeHeaderView = {
         let view = TimeHeaderView()
+        view.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 150)
+        view.autoresizingMask = [.flexibleWidth]
         view.inject(model: timeViewModel)
         return view
     }()
@@ -74,6 +76,8 @@ class RootViewController: UIViewController {
         
         view.addSubview(tableView)
         view.addSubview(addEventButton)
+        
+        tableView.tableHeaderView = timeHeaderView
     }
     
     override func viewDidLoad() {
@@ -104,6 +108,7 @@ class RootViewController: UIViewController {
     
     private func registerTableViews() {
         tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier)
+        tableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.reuseIdentifier)
         tableView.register(ErrorTableViewCell.self, forCellReuseIdentifier: ErrorTableViewCell.reuseIdentifier)
     }
 }
@@ -124,11 +129,6 @@ extension RootViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        timeHeaderView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 150)
-        return timeHeaderView
-    }
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -145,21 +145,7 @@ extension RootViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard
-            let sections = fetchedResultsController.sections,
-            let events = sections.first?.objects as? [Event] else {
-                return 40
-        }
-        let event = events[indexPath.row]
-        return EventTableViewCell.desiredHeight(for: event)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 150
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 90
+        return EventTableViewCell.desiredHeight()
     }
 }
 

@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
-import MapKit
 
 class EventTableViewCell: UITableViewCell {
     
@@ -18,17 +17,16 @@ class EventTableViewCell: UITableViewCell {
         return "\(self)"
     }
     
-    static func desiredHeight(for event: Event) -> CGFloat {
-        let latitude = event.latitude
-        let longitude = event.longitude
-        
-        return latitude == 0 && longitude == 0 ? 40 : 200
+    static func desiredHeight() -> CGFloat {
+        return 40
     }
     
     private lazy var timeLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "AvenirNext-UltraLight", size: 25)
         label.backgroundColor = UIColor(white: 1, alpha: 0.8)
+        label.frame = CGRect(x: 0, y: 0, width: 40, height: self.contentView.bounds.height)
+        label.autoresizingMask = [.flexibleHeight]
         return label
     }()
     
@@ -36,13 +34,9 @@ class EventTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont(name: "AvenirNext-UltraLight", size: 25)
         label.backgroundColor = UIColor(white: 1, alpha: 0.8)
+        label.frame = CGRect(x: 40, y: 0, width: self.contentView.bounds.width - 40, height: self.contentView.bounds.height)
+        label.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         return label
-    }()
-    
-    private lazy var mapView: MKMapView = {
-        let mapView = MKMapView()
-        mapView.isUserInteractionEnabled = false
-        return mapView
     }()
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -52,7 +46,6 @@ class EventTableViewCell: UITableViewCell {
         
         contentView.backgroundColor = .white
         
-        contentView.addSubview(mapView)
         contentView.addSubview(timeLabel)
         contentView.addSubview(titleLabel)
     }
@@ -61,33 +54,8 @@ class EventTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        let cellWidth = contentView.bounds.width
-        let timeLabelWidth: CGFloat = 60
-        let labelHeight: CGFloat = 40
-        timeLabel.frame = CGRect(x: 0, y: 0, width: timeLabelWidth, height: labelHeight)
-        titleLabel.frame = CGRect(x: timeLabelWidth, y: 0, width: cellWidth - timeLabelWidth, height: labelHeight)
-        mapView.frame = CGRect(x: 0, y: 0, width: contentView.bounds.width, height: contentView.bounds.height)
-    }
-    
     public func loadData(from event: Event) {
         timeLabel.text = ""
         titleLabel.text = event.title
-        
-        let latitude = event.latitude
-        let longitude = event.longitude
-        
-        if latitude == 0 && longitude == 0 {
-            mapView.alpha = 0
-            return
-        }
-        
-        mapView.alpha = 1
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        mapView.addAnnotation(annotation)
-        mapView.showAnnotations([annotation], animated: false)
     }
 }
