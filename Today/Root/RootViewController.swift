@@ -44,10 +44,10 @@ class RootViewController: UIViewController {
         return button
     }()
     
-    private let viewModel: DashboardViewModelType
+    private let viewModel: DashboardViewModel
     private var sectionData = [SectionDataModel]()
     
-    init(viewModel: DashboardViewModelType) {
+    init(viewModel: DashboardViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -74,11 +74,29 @@ class RootViewController: UIViewController {
             .rx
             .tap
             .subscribe(onNext: { [weak self] _ in
-                //                guard let coreDataManager = self?.viewModel.coreDataManager else { return }
-                //                self?.navigationController?.pushViewController(CreateEventViewController(coreDataManager: coreDataManager), animated: true)
+                guard let coreDataManager = self?.viewModel.coreDataManager else { return }
+                self?.navigationController?.pushViewController(CreateEventViewController(coreDataManager: coreDataManager), animated: true)
             }).disposed(by: disposeBag)
         
+        viewModel
+            .tableLock
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] lock in
+                if lock {
+                    self?.tableView.beginUpdates()
+                } else {
+                    self?.tableView.endUpdates()
+                }
+            }).disposed(by: disposeBag)
         
+        viewModel
+        .reloadSection
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] section in
+                guard let section = section else { return }
+                    self?.tableView.reloadSections(IndexSet(integer: section), with: UITableViewRowAnimation.fade)
+            }).disposed(by: disposeBag)
+
         viewModel
             .tableSections
             .observeOn(MainScheduler.instance)

@@ -13,12 +13,14 @@ import RxSwift
 protocol DashboardViewModelType {
     var tableSections: Observable<[SectionDataModel]> { get }
     var timeHeaderViewModel: TimeViewModelType { get }
+    var tableLock: Observable<Bool> { get }
+    var reloadSection: Observable<Int?> { get }
 }
 
 class DashboardViewModel: RootViewModel {
     
     fileprivate lazy var timeViewModel: TimeViewModelType = TimeViewModel()
-    private let coreDataManager: CoreDataManager
+    public let coreDataManager: CoreDataManager
     
     fileprivate lazy var fetchedResultsController: NSFetchedResultsController<Event> = {
         let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
@@ -35,6 +37,8 @@ class DashboardViewModel: RootViewModel {
     }()
     
     fileprivate let sectionData = Variable<[SectionDataModel]>([])
+    fileprivate var updateLock = Variable<Bool>(false)
+    fileprivate var reloadSectionSubject = BehaviorSubject<Int?>(value: nil)
     
     init(coreDataManager: CoreDataManager) {
         self.coreDataManager = coreDataManager
@@ -65,7 +69,7 @@ class DashboardViewModel: RootViewModel {
 extension DashboardViewModel: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        
+        updateLock.value = true
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -80,7 +84,11 @@ extension DashboardViewModel: NSFetchedResultsControllerDelegate {
             // todo
             break
         case .update:
-            // tell the tableview to reload only?
+            if let row = newIndexPath?.row {
+                let sectionModel = sectionData.value[row]
+                sectionModel.updateData()
+                reloadSectionSubject.on(.next(row))
+            }
             break
         case .move:
             // Noop
@@ -89,7 +97,7 @@ extension DashboardViewModel: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-
+        updateLock.value = false
     }
 }
 
@@ -102,20 +110,34 @@ extension DashboardViewModel: DashboardViewModelType {
     var timeHeaderViewModel: TimeViewModelType {
         return timeViewModel
     }
+    
+    var tableLock: Observable<Bool> {
+        return updateLock.asObservable()
+    }
+    
+    var reloadSection: Observable<Int?> {
+        return reloadSectionSubject.asObservable()
+    }
 }
 
 class SectionDataModel {
     
     public let event: Event
     
-    public let rowDataModels: [RootViewModel]
+    public var rowDataModels = [RootViewModel]()
+    
+    private lazy var eventViewModel = EventTableCellViewModel(event: event)
+    private lazy var locationViewModel = LocationTableCellViewModel(event: event)
     
     init(event: Event) {
         self.event = event
-        
-        var dataModels: [RootViewModel] = [EventTableCellViewModel(event: event)]
+        updateData()
+    }
+    
+    func updateData() {
+        var dataModels: [RootViewModel] = [eventViewModel]
         if event.hasLocationData() {
-            dataModels.append(LocationTableCellViewModel(event: event))
+            dataModels.append(locationViewModel)
         }
         rowDataModels = dataModels
     }
