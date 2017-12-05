@@ -54,8 +54,8 @@ class EventTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func loadData(from event: Event) {
+    public func inject(_ viewModel: EventTableCellViewModel) {
         timeLabel.text = ""
-        titleLabel.text = event.title
+        titleLabel.text = viewModel.event.title
     }
 }

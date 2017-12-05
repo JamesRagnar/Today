@@ -11,7 +11,7 @@ import CoreData
 import RxSwift
 
 protocol DashboardViewModelType {
-    var tableRows: Observable<[Event]> { get }
+    var tableSections: Observable<[SectionDataModel]> { get }
     var timeHeaderViewModel: TimeViewModelType { get }
 }
 
@@ -34,7 +34,7 @@ class DashboardViewModel: RootViewModel {
         return fetchedResultsController
     }()
     
-    fileprivate let events = Variable<[Event]>([])
+    fileprivate let sectionData = Variable<[SectionDataModel]>([])
     
     init(coreDataManager: CoreDataManager) {
         self.coreDataManager = coreDataManager
@@ -45,11 +45,20 @@ class DashboardViewModel: RootViewModel {
     private func startFetch() {
         do {
             try fetchedResultsController.performFetch()
-            events.value = fetchedResultsController.sections?.first?.objects as? [Event] ?? []
-            print("Ping")
+            parseResults()
         } catch {
             fatalError("Failed to initialize FetchedResultsController: \(error)")
         }
+    }
+    
+    private func parseResults() {
+        guard let events = fetchedResultsController.sections?.first?.objects as? [Event] else { return }
+        var sectionDataModels = [SectionDataModel]()
+        for event in events {
+            let newSection = SectionDataModel(event: event)
+            sectionDataModels.append(newSection)
+        }
+        sectionData.value = sectionDataModels
     }
 }
 
@@ -64,7 +73,8 @@ extension DashboardViewModel: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             if let row = newIndexPath?.row {
-                events.value.insert(event, at: row)
+                let newSection = SectionDataModel(event: event)
+                sectionData.value.insert(newSection, at: row)
             }
         case .delete:
             // todo
@@ -85,8 +95,8 @@ extension DashboardViewModel: NSFetchedResultsControllerDelegate {
 
 extension DashboardViewModel: DashboardViewModelType {
     
-    var tableRows: Observable<[Event]> {
-        return events.asObservable()
+    var tableSections: Observable<[SectionDataModel]> {
+        return sectionData.asObservable()
     }
     
     var timeHeaderViewModel: TimeViewModelType {
@@ -96,17 +106,17 @@ extension DashboardViewModel: DashboardViewModelType {
 
 class SectionDataModel {
     
-    private let event: Event
+    public let event: Event
     
-    public var rows = Variable<[RowDataModel]>([])
+    public let rowDataModels: [RootViewModel]
     
     init(event: Event) {
         self.event = event
-    }
-    
-    func update() {
+        
+        var dataModels: [RootViewModel] = [EventTableCellViewModel(event: event)]
         if event.hasLocationData() {
-            
+            dataModels.append(LocationTableCellViewModel(event: event))
         }
+        rowDataModels = dataModels
     }
 }

@@ -11,6 +11,7 @@
 		AD29709E1FCF6EF500E0569A /* TodayDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AD29709C1FCF6EF500E0569A /* TodayDataModel.xcdatamodeld */; };
 		AD2D15F51FD0DE570049B0CC /* NewEntryParserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D15F41FD0DE570049B0CC /* NewEntryParserView.swift */; };
 		AD74A46C1FC64C4C00BD5BBA /* TimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD74A46B1FC64C4C00BD5BBA /* TimeViewModel.swift */; };
+		ADB8DBD41FD6156F0086F53E /* LocationTableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB8DBD31FD6156F0086F53E /* LocationTableCellViewModel.swift */; };
 		ADDD6E121FC6640D00679F57 /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD6E111FC6640D00679F57 /* RootViewModel.swift */; };
 		ADDD6E141FC66E1100679F57 /* CreateEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD6E131FC66E1100679F57 /* CreateEventViewController.swift */; };
 		ADDD6E161FC67F7200679F57 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD6E151FC67F7200679F57 /* EventTableViewCell.swift */; };
@@ -46,6 +47,7 @@
 		AD29709D1FCF6EF500E0569A /* TodayDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TodayDataModel.xcdatamodel; sourceTree = "<group>"; };
 		AD2D15F41FD0DE570049B0CC /* NewEntryParserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEntryParserView.swift; sourceTree = "<group>"; };
 		AD74A46B1FC64C4C00BD5BBA /* TimeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeViewModel.swift; sourceTree = "<group>"; };
+		ADB8DBD31FD6156F0086F53E /* LocationTableCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTableCellViewModel.swift; sourceTree = "<group>"; };
 		ADDD6E111FC6640D00679F57 /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		ADDD6E131FC66E1100679F57 /* CreateEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventViewController.swift; sourceTree = "<group>"; };
 		ADDD6E151FC67F7200679F57 /* EventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				ADDD6E151FC67F7200679F57 /* EventTableViewCell.swift */,
 				ADE736931FD58C1B0077227A /* EventTableCellViewModel.swift */,
 				ADE7368D1FD574C10077227A /* LocationTableViewCell.swift */,
+				ADB8DBD31FD6156F0086F53E /* LocationTableCellViewModel.swift */,
 				AD74A46B1FC64C4C00BD5BBA /* TimeViewModel.swift */,
 			);
 			path = Root;
@@ -298,6 +301,7 @@
 				ADE736961FD58C3D0077227A /* RowDataModel.swift in Sources */,
 				ADE7368B1FD460870077227A /* ErrorTableViewCell.swift in Sources */,
 				ADE736891FD45CA80077227A /* EventFactory.swift in Sources */,
+				ADB8DBD41FD6156F0086F53E /* LocationTableCellViewModel.swift in Sources */,
 				ADE736901FD5787A0077227A /* Event+Today.swift in Sources */,
 				ADE736941FD58C1B0077227A /* EventTableCellViewModel.swift in Sources */,
 				ADDD6E141FC66E1100679F57 /* CreateEventViewController.swift in Sources */,

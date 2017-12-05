@@ -18,8 +18,8 @@ class RootViewController: UIViewController {
         let tableView = UITableView()
         tableView.frame = view.bounds
         tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        tableView.delegate = self
-//        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.backgroundColor = .gray
         return tableView
     }()
@@ -45,6 +45,7 @@ class RootViewController: UIViewController {
     }()
     
     private let viewModel: DashboardViewModelType
+    private var sectionData = [SectionDataModel]()
     
     init(viewModel: DashboardViewModelType) {
         self.viewModel = viewModel
@@ -73,16 +74,18 @@ class RootViewController: UIViewController {
             .rx
             .tap
             .subscribe(onNext: { [weak self] _ in
-//                guard let coreDataManager = self?.viewModel.coreDataManager else { return }
-//                self?.navigationController?.pushViewController(CreateEventViewController(coreDataManager: coreDataManager), animated: true)
+                //                guard let coreDataManager = self?.viewModel.coreDataManager else { return }
+                //                self?.navigationController?.pushViewController(CreateEventViewController(coreDataManager: coreDataManager), animated: true)
             }).disposed(by: disposeBag)
         
         
         viewModel
-            .tableRows
-            .bind(to: tableView.rx.items(cellIdentifier: EventTableViewCell.reuseIdentifier, cellType: EventTableViewCell.self)) { (row, event, cell) in
-                cell.loadData(from: event)
-            }.disposed(by: disposeBag)
+            .tableSections
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (data) in
+                self?.sectionData = data
+                self?.tableView.reloadData()
+            }).disposed(by: disposeBag)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,22 +101,49 @@ class RootViewController: UIViewController {
     }
 }
 
-//extension RootViewController: UITableViewDelegate, UITableViewDataSource {
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        return ErrorTableViewCell()
-//    }
-//
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 0
-//    }
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//       return 0
-//    }
-//
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return EventTableViewCell.desiredHeight()
-//    }
-//}
+extension RootViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let section = sectionData[indexPath.section]
+        let viewModel = section.rowDataModels[indexPath.row]
+        
+        if let viewModel = viewModel as? EventTableCellViewModel,
+            let cell = tableView.dequeueReusableCell(withIdentifier: EventTableViewCell.reuseIdentifier) as? EventTableViewCell {
+            cell.inject(viewModel)
+            return cell
+        }
+        
+        if let viewModel = viewModel as? LocationTableCellViewModel,
+            let cell = tableView.dequeueReusableCell(withIdentifier: LocationTableViewCell.reuseIdentifier) as? LocationTableViewCell {
+            cell.inject(viewModel)
+            return cell
+        }
+        
+        return ErrorTableViewCell()
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sectionData.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let section = sectionData[section]
+        return section.rowDataModels.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let section = sectionData[indexPath.section]
+        let viewModel = section.rowDataModels[indexPath.row]
+        
+        if viewModel is EventTableCellViewModel {
+            return EventTableViewCell.desiredHeight()
+        }
+        
+        if viewModel is LocationTableCellViewModel {
+            return LocationTableViewCell.desiredHeight()
+        }
+        
+        return 0
+    }
+}
 

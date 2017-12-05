@@ -1,5 +1,5 @@
 //
-//  EventTableCellViewModel.swift
+//  LocationTableCellViewModel.swift
 //  Today
 //
 //  Created by James Harquail on 2017-12-04.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class EventTableCellViewModel: RowDataModel {
+class LocationTableCellViewModel: RootViewModel {
     
     public let event: Event
     

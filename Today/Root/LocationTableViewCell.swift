@@ -17,7 +17,7 @@ class LocationTableViewCell: UITableViewCell {
     }
     
     static func desiredHeight() -> CGFloat {
-        return 40
+        return 150
     }
     
     private lazy var mapView: MKMapView = {
@@ -43,10 +43,10 @@ class LocationTableViewCell: UITableViewCell {
         mapView.removeAnnotations(mapView.annotations)
     }
     
-    public func loadData(from event: Event) {
-        guard event.hasLocationData() else { return }
+    public func inject(_ viewModel: LocationTableCellViewModel) {
+        guard viewModel.event.hasLocationData() else { return }
         let annotation = MKPointAnnotation()
-        annotation.coordinate = CLLocationCoordinate2D(latitude: event.latitude, longitude: event.longitude)
+        annotation.coordinate = CLLocationCoordinate2D(latitude: viewModel.event.latitude, longitude: viewModel.event.longitude)
         mapView.addAnnotation(annotation)
         mapView.showAnnotations([annotation], animated: false)
     }
